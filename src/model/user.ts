@@ -1,26 +1,19 @@
-export class User {
-    userId: number; // primary key
-    username: string; // not null, unique
-    password: string; // not null
-    firstName: string; // not null
-    lastName: string; // not null
-    email: string; // not null
-    role: string; // not null
+import { Role } from './role';
 
-constructor(
-    userId = 0, 
-    username = '', 
-    password = '', 
-    firstName = '', 
-    lastName = '', 
-    email = '', 
-    role = '') {
+export class User {
+  userId: number;
+  username: string;
+  password: string;
+  firstname: string;
+  lastname: string;
+  role: Role;
+
+  constructor(userId = 0, username = '', password = '', firstname = '', lastname = '',role: Role = undefined) {
     this.userId = userId;
     this.username = username;
     this.password = password;
-    this.firstName = firstName;
-    this.lastName = lastName;
-    this.email= email;
+    this.firstname = firstname;
+    this.lastname = lastname;
     this.role = role;
-    }
+  }
 }
