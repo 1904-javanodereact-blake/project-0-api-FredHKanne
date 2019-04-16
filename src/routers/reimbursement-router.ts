@@ -9,38 +9,51 @@ import { authMiddleware } from '../middleware/auth.middleware';
 export const reimbursementRouter = express.Router();
 
 /**
- * find all reimbursements 
+ * find all reimbursements
  * endpoint: /reimbursements
  */
-reimbursementRouter.get('', [
-  authMiddleware(['admin','finance_manager']), async (req, res) => {
-//  const status_id = +req.params.id;
-  console.log('Retreiving all reimbursements');
-  const user = await reimbursementDao.findAllReimbursement();
-  res.json(user);
-}]);
+// reimbursementRouter.get('', [
+//   authMiddleware(['admin']),
+//   async (req, res) => {
+//   const reimbursements= await reimbursementDao.findAllReimbursement();
+//   res.json(reimbursements);
+// }]);
 
 /**
- * find all reimbursements by status_id
- * endpoint: /reimbursements/:status_id
+ * find reimbursements by  status id
+ * endpoint: /reimbursements/status/:id
  */
-reimbursementRouter.get('/status_id', [
+reimbursementRouter.get('/status/:id', [
   authMiddleware(['admin','finance_manager']), async (req, res) => {
-  const status_id = +req.params.id;
-  console.log(`Retreiving all reimbursements ${status_id}`);
-  const user = await reimbursementDao.findAllRByStatus(status_id);
+    const status_id: number = +req.params.id;
+    console.log(`retreiving reimbursement with status id: ${status_id}`);
+    const user = await reimbursementDao.findById(status_id);
+  if (user) {
+    // attach the user data to the session object
+    req.session.user = user;
   res.json(user);
+  } else {
+  res.sendStatus(401);
+  }
 }]);
 
 /**
  * find reimbursement by /author/user_id
  * endpoint: /reimbursements//author/user_id
  */
-reimbursementRouter.get('/author/user_id', async (req, res) => {
-  const user_id = +req.params.id;
-  console.log(`retreiving reimbursement with id: ${user_id}`);
-  res.json(await reimbursementDao.findAllRByUserID(user_id));
-});
+reimbursementRouter.get('/author/:id', [
+  authMiddleware(['admin','finance_manager']), async (req, res) => {
+    const id: number = +req.params.id;
+    console.log(`retreiving reimbursement with author: ${id}`);
+    const user = await reimbursementDao.findById(id);
+  if (user) {
+    // attach the user data to the session object
+    req.session.user = user;
+  res.json(user);
+  } else {
+  res.sendStatus(401);
+  }
+}]);
 
 // reimbursementRouter.post('', (req, res) => {
 //   console.log(`creating reimbursement`, req.body);
