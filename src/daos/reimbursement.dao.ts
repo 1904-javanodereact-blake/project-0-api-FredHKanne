@@ -1,6 +1,6 @@
 import { connectionPool } from '.';
 import { PoolClient } from 'pg';
-import { convertSqlReimbursement } from '../util/sql-reimbursement-conveter';
+import { convertSqlReimbursement } from '../util/sql-reimbursement-converter';
 
 export async function findAllReimbursement() {
   let client: PoolClient;

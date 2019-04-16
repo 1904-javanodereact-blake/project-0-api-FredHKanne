@@ -17,3 +17,4 @@ export const connectionPool = new Pool({
   port: 5432,
   max: 5, // max number of connections this application will create
 });
+
