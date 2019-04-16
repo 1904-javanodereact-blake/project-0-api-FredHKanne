@@ -25,19 +25,37 @@ userRouter.get('', [
  * find user by id
  * endpoint: /users/:id
  */
-userRouter.get('/:id', [
-  authMiddleware(['admin','finance_manager']), async (req, res) => {
+// userRouter.get('/:id', [
+//   authMiddleware(['admin','finance_manager']), async (req, res) => {
+//   const user_id: number = +req.params.user_id;
+// //  const {user_id} = req.body;
+// console.log(`retreiving user with id: ${user_id}`);
+//   const user = await userDao.findById(user_id);
+//   if (user) {
+//     // attach the user data to the session object
+//     req.session.user = user;
+//   res.json(user);
+//   } else {
+//   res.sendStatus(401);
+//   }
+// }]);
+
+
+/**
+ * find user by id
+ * endpoint: /users/:id
+ */
+userRouter.get('/:id', async (req, res) => {
+  const id: number = +req.params.id;
   const user_id: number = +req.params.id;
   console.log(`retreiving user with id: ${user_id}`);
-  const user = await userDao.findUserById(user_id);
+  const user = await userDao.findById(user_id);
   if (user) {
-    // attach the user data to the session object
-    req.session.user = user;
-  res.json(user);
+    res.json(user);
   } else {
-  res.sendStatus(401);
+    res.sendStatus(404);
   }
-}]);
+});
 
 /**
  * user login with username and password
@@ -50,6 +68,24 @@ userRouter.post('/login', async (req, res) => {
     req.session.user = user;
     res.json(user);
   } else {
-    res.sendStatus(401);
+    res.sendStatus(400);
   }
 });
+
+/**
+ * find user by id
+ * endpoint: /users/:id
+ */
+userRouter.patch('/:id', [
+  authMiddleware(['admin']), async (req, res) => {
+  const user_id: number = +req.params.id;
+  console.log(`updating user with id: ${user_id}`);
+  const user = await userDao.patchUserById(user_id);
+  if (user) {
+    // attach the user data to the session object
+    req.session.user = user;
+  res.json(user);
+  } else {
+  res.sendStatus(401);
+  }
+}]);

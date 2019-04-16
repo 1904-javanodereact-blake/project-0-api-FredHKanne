@@ -19,6 +19,56 @@ export async function findAllUsers() {
   }
 }
 
+export async function findById(user_id: number) {
+  let client: PoolClient;
+  try {
+    client = await connectionPool.connect();
+    const queryString = 'SELECT * FROM reimbursement.user WHERE user_id = $1';
+    const result = await client.query(queryString, [user_id]);
+    console.log(result.rows);
+    return result.rows[0] && convertSqlUser(result.rows[0]);
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  } finally {
+    client && client.release();
+  }
+}
+
+
+// export async function findUserById(user_id: number) {
+//   let client: PoolClient;
+//   try {
+//     client = await connectionPool.connect();
+//     console.log(`user #${user_id}`);
+//     const queryString = 'SELECT * FROM reimbursement.user WHERE user_id = $1';
+//     const result = await client.query(queryString, [user_id]);
+//     console.log(result.rows);
+//     return convertSqlUser(result.rows[0]);
+//   } catch (err) {
+//     console.log(err);
+//     return undefined;
+//   } finally {
+//     client && client.release();
+//   }
+// }
+
+export async function patchUserById(user_id: number) {
+  let client: PoolClient;
+  try {
+    client = await connectionPool.connect();
+    const queryString = 'UPDATE reimbursement.user SET user_id=$1.username=$2, password=$3, firstname=$4, lastname=$5, email=$6, role.role=$7 WHERE user_id = $1';
+    const result = await client.query(queryString, [user_id]);
+    console.log(result.rows);
+    return convertSqlUser(result.rows[0]);
+  } catch (err) {
+    console.log(err);
+    return undefined;
+  } finally {
+    client && client.release();
+  }
+}
+
 export async function findByUsernameAndPassword(username: string, password: string) {
   let client: PoolClient;
   try {
@@ -43,37 +93,3 @@ export async function findByUsernameAndPassword(username: string, password: stri
     client && client.release();
   }
 }
-
-export async function findUserById(user_id: number) {
-  let client: PoolClient;
-  try {
-    client = await connectionPool.connect();
-    const queryString = 'SELECT * FROM reimbursement.user WHERE user_id = $1';
-    const result = await client.query(queryString, [user_id]);
-    console.log(result.rows);
-    return convertSqlUser(result.rows[0]);
-  } catch (err) {
-    console.log(err);
-    return undefined;
-  } finally {
-    client && client.release();
-  }
-}
-
-// export async function findUserById(user_id: number) {
-//   let client: PoolClient;
-//   try {
-//     client = await connectionPool.connect();
-//     console.log('before all user await');
-//     const result = await client.query(`SELECT * FROM reimbursement.user
-//     WHERE user_id = $1`);
-//     console.log(`after all user await ${result}`);
-//     return result.rows.map(convertSqlUser);
-//   } catch (err) {
-//     console.log(err);
-//     return undefined;
-//   } finally {
-//     client && client.release();
-//   }
-// }
-
